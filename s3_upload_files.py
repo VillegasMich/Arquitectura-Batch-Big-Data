@@ -59,9 +59,9 @@ class S3Uploader:
             return False
 
         try:
-            s3_client.upload_file(file_path, bucket_name, object_name)
+            s3_client.upload_file(file_path, bucket_name, "raw/" + object_name)
             print(
-                f"File '{file_path}' successfully uploaded to '{bucket_name}/{object_name}'"
+                f"File '{file_path}' successfully uploaded to '{bucket_name}/raw/{object_name}'"
             )
             return True
         except FileNotFoundError:
