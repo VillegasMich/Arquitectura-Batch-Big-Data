@@ -1,9 +1,10 @@
 import boto3
+import os
 from botocore.exceptions import ClientError, NoCredentialsError, PartialCredentialsError
 
 
 class S3Uploader:
-    AWS_BUCKET_NAME = "bucket-python-bot"
+    AWS_BUCKET_NAME = "emr-project3"
     AWS_REGION = "us-east-1"
     AWS_ACCESS_KEY = ""
     AWS_SECRET_KEY = ""
@@ -34,8 +35,6 @@ class S3Uploader:
         """
         # If S3 object_name was not specified, use the base name of the file
         if object_name is None:
-            import os
-
             object_name = os.path.basename(file_path)
 
         # Create an S3 client. Pass credentials if provided.
@@ -63,6 +62,8 @@ class S3Uploader:
             print(
                 f"File '{file_path}' successfully uploaded to '{bucket_name}/raw/{object_name}'"
             )
+            os.remove(file_path)
+            print(f"Local file '{file_path}' deleted.")
             return True
         except FileNotFoundError:
             print(f"Error: The file was not found at '{file_path}'")
