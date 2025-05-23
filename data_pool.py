@@ -1,8 +1,6 @@
-DATA_POOL_MAX_LENGTH = 4
 WORLD_BANK_POOL = [
-    "WB_MPM",
-    "WB_SHP",
-    "WB_LPGD",
-    "WB_MPO",
+    "WB_WDI",
+    "WB_ESG",
+    "WB_SE4ALL",
 ]
 SAKILA_POOL = ["actor", "customer", "film", "language"]
