@@ -5,10 +5,19 @@ from data_pool import SAKILA_POOL, WORLD_BANK_POOL
 from db_requester import DBRequester
 from json_csv_converter import JSONToCSVConverter
 from s3_upload_files import S3Uploader
+# from yf_requester import YfRequester, save_data_to_csv
 
 
 def main():
     files = []
+
+    # Fetch Yahoo Finance
+    # yf_client = YfRequester()
+    # historical_data = yf_client.fetch_historical_data("META")
+    # if historical_data is not None:
+    #     csv_file_yf, csv_filename_yf = save_data_to_csv(
+    #         historical_data, f"{'META'}_historical.csv"
+    #     )
 
     # Fetch Sakila DB
     for table_name in SAKILA_POOL:
