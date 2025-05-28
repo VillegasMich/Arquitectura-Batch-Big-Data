@@ -102,7 +102,7 @@ El API gateway que se implementó fue el dispuesto por AWS con ayuda de `AWS Lam
 
 De esta manera y de acuerdo al endpoint correspondiente, se hace la ejecucion de la siguiente función lambda:
 
-<IMAGEN!!!!!!!!>
+![image](https://github.com/user-attachments/assets/e1bf31ca-251d-4f57-ad24-56231c245a5a)
 
 ```python
 import json
@@ -202,6 +202,10 @@ Toda la configuracion del bot se puede reailzar desde el archivo `main.py`, `s3_
 ## 5. Otra información relevante
 
 ### Gráficas
+![observation_statis_country_global](https://github.com/user-attachments/assets/58cce1d3-b155-4e9f-a884-e8597b7299b2)
+![observation_summary_stats_ESG](https://github.com/user-attachments/assets/68cefa6b-ed9f-47be-b17d-db4fe228c919)
+![observation_summary_stats_SE4ALL](https://github.com/user-attachments/assets/2c8fa13f-b56c-4315-ba63-a0fd16806423)
+![observation_summary_stats_WDI](https://github.com/user-attachments/assets/149bae8e-5f3d-48d6-b3df-bbf7df227503)
 
 ## Referencias
 
