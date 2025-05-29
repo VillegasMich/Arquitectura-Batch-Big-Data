@@ -12,7 +12,7 @@
 
 # Automatización del proceso de Captura, Ingesta, Procesamiento y Salida de datos accionables (Arquitectura Batch para Big Data)
 
-## 1. breve descripción de la actividad
+## 1. Breve descripción de la actividad
 
 Este proyecto implementa una arquitectura tipo batch en la nube para la captura, ingesta, procesamiento y análisis de datos a gran escala, automatizando cada etapa sin intervención humana. El objetivo es simular un proceso de ingeniería de datos real utilizando servicios cloud (AWS EMR, S3, Athena, API Gateway, entre otros) y fuentes de datos externas (APIs públicas, archivos en línea y bases de datos relacionales).
 
@@ -27,6 +27,7 @@ Este proyecto implementa una arquitectura tipo batch en la nube para la captura,
 - Almacenamiento del resultado en zona `Trusted`.
 - Análisis descriptivo y analítica con SparkSQL y SparkML.
 - Resultados enviados automáticamente a la zona `Refined` en S3.
+- Consumo de los resultados via API Gateway para su visualización.
 - Documentación del proceso en este archivo README.
 - Video de sustentación y scripts completos en el repositorio.
 
@@ -157,6 +158,38 @@ def lambda_handler(event, context):
 
 Toda la configuracion del bot se puede reailzar desde el archivo `main.py`, `s3_upload_files.py` y `data_pool.py`
 
+### Preparación del cluster y steps
+
+Una vez que los archivos estén almacenados en la zona `raw` del bucket S3 y se hayan creado todas las carpetas necesarias, el siguiente paso es clonar un cluster EMR pre-configurado que contenga todas las herramientas y programas requeridos. Es importante que el bucket S3 tenga una carpeta llamada `steps` que contenga todos los scripts de Python que se ejecutarán como steps en el cluster.
+
+Una vez que el cluster esté completamente inicializado, dirígete a la sección de `steps` en la interfaz de EMR. Aquí deberás agregar los scripts de Python en orden. Estos scripts están diseñados para realizar las tareas de preparación y análisis de datos.
+
+#### Script de preparación de datos
+**Nombre del step:** EDSTATS-step.py
+
+El script de preparación de datos es genérico y puede utilizarse para todos los archivos. Este recibe el nombre de un archivo como parámetro al ejecutarse y realiza las siguientes operaciones sobre el archivo especificado en la zona de parametros:
+
+1. Localiza y extrae el archivo desde la zona `raw` del bucket S3.
+2. Rellena los valores nulos en la columna `OBS_VALUE` con 0.0 para no afectar el análisis.
+3. Elimina las columnas constantes que no aportan valor al análisis planeado.
+4. Reordena las columnas para asegurar que todos los conjuntos de datos sigan el mismo esquema.
+5. Guarda el conjunto de datos procesado en la zona `Trusted` de S3.
+
+Deberas de crear un step con este script para cada uno de los archivos que vayas a analizar.
+
+#### Script de analisis de datos
+**Nombre del step:** indicator-analysis.py
+
+Una vez que los datos se encuentran en la zona `Trusted`, el siguiente paso se encargará de analizarlos mediante PySpark SQL para extraer métricas que facilitarán el estudio de los indicadores. Este proceso incluye:
+
+1. Localizar y extraer de forma recursiva los archivos desde la zona `Trusted` del bucket S3.
+2. Realizar un análisis de los datos por país y por indicador, identificando los países con mejor desempeño en cada indicador individual.
+3. Escribir los resultados en la zona `Refined` por indicador dentro de la carpeta `stats_country_indicator`, organizados por `DATABASE_ID` que identifica el indicador analizado.
+4. Realizar un análisis global de todos los indicadores por país, evaluando el desempeño general de cada país considerando todos los indicadores en conjunto.
+5. Escribir los resultados globales en la zona `Refined` dentro de la carpeta `stats_country_global`.
+
+Es importante destacar que este script debe ejecutarse en un único paso, ya que realiza el análisis de todos los archivos de manera simultánea.
+
 ### Organización del proyecto
 
 #### Python Bot
@@ -176,6 +209,7 @@ Toda la configuracion del bot se puede reailzar desde el archivo `main.py`, `s3_
 ├── yf_requester.py # clase encargada de peticiones a Yahoo Finance (No utilizada)
 ├── README.md # Documentación
 ```
+
 
 #### Consumo de API Gateway y Gráficas
 
