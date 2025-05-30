@@ -236,16 +236,34 @@ Es importante destacar que este script debe ejecutarse en un único paso, ya que
 ## 5. Otra información relevante
 
 ### Gráficas
+### De analítica con Spark
 ![observation_statis_country_global](https://github.com/user-attachments/assets/58cce1d3-b155-4e9f-a884-e8597b7299b2)
 ![observation_summary_stats_ESG](https://github.com/user-attachments/assets/68cefa6b-ed9f-47be-b17d-db4fe228c919)
 ![observation_summary_stats_SE4ALL](https://github.com/user-attachments/assets/2c8fa13f-b56c-4315-ba63-a0fd16806423)
 ![observation_summary_stats_WDI](https://github.com/user-attachments/assets/149bae8e-5f3d-48d6-b3df-bbf7df227503)
 
+### De predicción con Machine Learning usando SparkML
+
+Resultados del modelo implementado para cada indicador
+
+![image](https://github.com/user-attachments/assets/3b94df79-1406-474b-bf9b-1898605912e6)
+![image](https://github.com/user-attachments/assets/02f35992-7a15-4136-86ac-173618aac9fc)
+![image](https://github.com/user-attachments/assets/d750bf3b-e391-4eea-8a3d-864b94b83ee4)
+
+
 ## Referencias
 
+- [Github de la materia con tutoriales](https://github.com/st0263eafit/st0263-251/tree/main/bigdata/03-spark)
 - [Caso base en GitHub y video YouTube](https://github.com/airscholar/EMR-for-data-engineers/tree/main)
 - [Documentación oficial AWS EMR](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html)
+- [Tutorial Spark](https://www.databricks.com/spark/getting-started-with-apache-spark/machine-learning)
 
+
+### Datos de World Bank Open Data
+
+- [Indicador de WDI](https://data360.worldbank.org/en/indicator/WB_WDI_SP_DYN_LE00_IN)
+- [Indicador de ESG](https://data360.worldbank.org/en/indicator/WB_ESG_EN_ATM_CO2E_PC)
+- [Indicador de SE4ALL](https://data360.worldbank.org/en/indicator/WB_SE4ALL_EG_ACS_ELEC)
 ```
 
 ```
