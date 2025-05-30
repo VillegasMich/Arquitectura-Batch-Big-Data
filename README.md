@@ -220,6 +220,51 @@ Es importante destacar que este script debe ejecutarse en un único paso, ya que
 ├── main.py # punto de entrada de ejecución
 ├── api_requester.py # clase encargada de peticiones a la API Gateway
 ```
+### Consumo por medio de AWS Athena
+Athena nos permite acceder a nuestros datos almacenados en S3 mediante consultas SQL, lo cual facilita la creación de tablas para el análisis y manipulación de los datos. Los scripts para crear las tablas:
+
+> Nota: Es necesario configurar previamente un objeto de salida en S3 para que las consultas puedan ejecutarse correctamente.
+
+1. Creación de las tablas de paises por indicador.
+
+      ```sql
+      CREATE EXTERNAL TABLE IF NOT EXISTS refined.stats_country_indicator_${filename} (
+        REF_AREA string,
+        avg_val double,
+        median_val double,
+        min_val double,
+        max_val double,
+        count_obs int
+      )
+      ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+      WITH SERDEPROPERTIES (
+        "separatorChar" = ",",
+        "quoteChar"     = "\""
+      )
+      LOCATION 's3://emr-project3/refined/stats_country_indicator/DATABASE_ID=${filename}/'
+      TBLPROPERTIES ('skip.header.line.count'='1');
+      ```
+2. Creación de la tabla de paises tomando en cuenta todos los indicadores.
+
+      ```sql
+      CREATE EXTERNAL TABLE IF NOT EXISTS refined.stats_per_country (
+        REF_AREA string,
+        avg_val double,
+        median_val double,
+        min_val double,
+        max_val double,
+        count_obs int
+      )
+      ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+      WITH SERDEPROPERTIES (
+        "separatorChar" = ",",
+        "quoteChar"     = "\""
+      )
+      LOCATION 's3://emr-project3/refined/stats_country_global/'
+      TBLPROPERTIES ('skip.header.line.count'='1');
+      ```
+
+
 
 ## 4. Descripción del ambiente de EJECUCIÓN
 
