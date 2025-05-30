@@ -68,19 +68,19 @@ AWS_SECRET_KEY = ""
 AWS_SESSION_TOKEN = ""
 ```
 
-- Las credenciales se pueden adquirir desde la terminar del laboratorio con el siguiente comando
+- Las credenciales se pueden adquirir desde la terminal del laboratorio con el siguiente comando:
 
 ```bash
 cat .aws/credentials
 ```
 
-- Asegurarse de inicial el contenedor con la base de datos Sakila
+- Asegurarse de iniciar el contenedor con la base de datos Sakila:
 
 ```bash
 docker run -d --publish 3306:3306 --name mysqld restsql/mysql-sakila
 ```
 
-- Finalmente se ejecuta de la siguiente manera:
+- Finalmente, se ejecuta de la siguiente manera:
 
 ```bash
 source .venv/bin/activate
@@ -88,20 +88,20 @@ pip install -r requirements.txt
 python main.py
 ```
 
-El bot automaticamente realizará las respectivas consultas y subirá los archivos a la zona `raw` cada 30 minutos (la cuenta academy de AWS tiene límite de 4 horas)
+El bot automáticamente realizará las respectivas consultas y subirá los archivos a la zona `raw` cada 30 minutos (la cuenta academy de AWS tiene límite de 4 horas).
 
 ### Parámetros y configuración
 
 #### API Gateway
 
-El API gateway que se implementó fue el dispuesto por AWS con ayuda de `AWS Lambda` para las fuciones de extraer los datos **refined** del bucket S3. los enpoints disponibles son los siguientes:
+El API gateway que se implementó fue el dispuesto por AWS con ayuda de `AWS Lambda` para las funciones de extraer los datos **refined** del bucket S3. Los endpoints disponibles son los siguientes:
 
 **root:** `https://pl4uky6vwj.execute-api.us-east-1.amazonaws.com/prod`
 **extract-trusted-info:** `https://pl4uky6vwj.execute-api.us-east-1.amazonaws.com/prod/extract-trusted-info`
 
 ##### Funciones Lambda
 
-De esta manera y de acuerdo al endpoint correspondiente, se hace la ejecucion de la siguiente función lambda:
+De esta manera y de acuerdo al endpoint correspondiente, se hace la ejecución de la siguiente función lambda:
 
 ![image](https://github.com/user-attachments/assets/e1bf31ca-251d-4f57-ad24-56231c245a5a)
 
@@ -156,9 +156,9 @@ def lambda_handler(event, context):
 
 #### Python Bot
 
-Toda la configuracion del bot se puede reailzar desde el archivo `main.py`, `s3_upload_files.py` y `data_pool.py`
+Toda la configuración del bot se puede realizar desde el archivo `main.py`, `s3_upload_files.py` y `data_pool.py`
 
-### Preparación del cluster y steps
+### Preparación del Cluster y Steps
 
 Una vez que los archivos estén almacenados en la zona `raw` del bucket S3 y se hayan creado todas las carpetas necesarias, el siguiente paso es clonar un cluster EMR pre-configurado que contenga todas las herramientas y programas requeridos. Es importante que el bucket S3 tenga una carpeta llamada `steps` que contenga todos los scripts de Python que se ejecutarán como steps en el cluster.
 
@@ -167,7 +167,7 @@ Una vez que el cluster esté completamente inicializado, dirígete a la sección
 #### Script de preparación de datos
 **Nombre del step:** EDSTATS-step.py
 
-El script de preparación de datos es genérico y puede utilizarse para todos los archivos. Este recibe el nombre de un archivo como parámetro al ejecutarse y realiza las siguientes operaciones sobre el archivo especificado en la zona de parametros:
+El script de preparación de datos es genérico y puede utilizarse para todos los archivos. Este recibe el nombre de un archivo como parámetro al ejecutarse y realiza las siguientes operaciones sobre el archivo especificado en la zona de parámetros:
 
 1. Localiza y extrae el archivo desde la zona `raw` del bucket S3.
 2. Rellena los valores nulos en la columna `OBS_VALUE` con 0.0 para no afectar el análisis.
@@ -175,7 +175,7 @@ El script de preparación de datos es genérico y puede utilizarse para todos lo
 4. Reordena las columnas para asegurar que todos los conjuntos de datos sigan el mismo esquema.
 5. Guarda el conjunto de datos procesado en la zona `Trusted` de S3.
 
-Deberas de crear un step con este script para cada uno de los archivos que vayas a analizar.
+Deberás de crear un step con este script para cada uno de los archivos que vayas a analizar.
 
 #### Script de analisis de datos
 **Nombre del step:** indicator-analysis.py
@@ -244,7 +244,7 @@ Athena nos permite acceder a nuestros datos almacenados en S3 mediante consultas
       LOCATION 's3://emr-project3/refined/stats_country_indicator/DATABASE_ID=${filename}/'
       TBLPROPERTIES ('skip.header.line.count'='1');
       ```
-2. Creación de la tabla de paises tomando en cuenta todos los indicadores.
+2. Creación de la tabla de países tomando en cuenta todos los indicadores.
 
       ```sql
       CREATE EXTERNAL TABLE IF NOT EXISTS refined.stats_per_country (
@@ -320,6 +320,4 @@ Resultados del modelo implementado para cada indicador
 - [Indicador de WDI](https://data360.worldbank.org/en/indicator/WB_WDI_SP_DYN_LE00_IN)
 - [Indicador de ESG](https://data360.worldbank.org/en/indicator/WB_ESG_EN_ATM_CO2E_PC)
 - [Indicador de SE4ALL](https://data360.worldbank.org/en/indicator/WB_SE4ALL_EG_ACS_ELEC)
-```
-
-```
+  
