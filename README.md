@@ -280,7 +280,18 @@ Athena nos permite acceder a nuestros datos almacenados en S3 mediante consultas
 
 ## 5. Otra información relevante
 
+### Descripción de la fuente de datos utilizada
+
+Los datos usados en este proyecto provienen de [World Bank Open Data](https://data.worldbank.org/), una fuente confiable que ofrece indicadores globales para el análisis del desarrollo socioeconómico y ambiental. Nos enfocamos en tres conjuntos de indicadores: WDI, ESG y SE4ALL, que permiten estudiar diferentes aspectos como salud, emisiones de carbono y acceso a electricidad.
+
+El indicador WDI (World Development Indicators) mide la esperanza de vida al nacer, que representa los años promedio que viviría un recién nacido si las condiciones de mortalidad actuales se mantienen constantes. Este dato es crucial para evaluar la salud y el desarrollo socioeconómico de un país.
+
+El indicador ESG (Environment, Social & Governance) incluye las emisiones de CO2 per cápita, que reflejan el impacto ambiental de la quema de combustibles fósiles y la producción industrial. Este indicador es fundamental para entender la contribución de cada país al cambio climático global.
+
+Finalmente, el indicador SE4ALL (Sustainable Energy For All) mide el porcentaje de la población con acceso a electricidad. Este dato es clave para evaluar el progreso hacia el acceso universal a energía confiable y sostenible, un aspecto esencial para el desarrollo social y económico.
+
 ### Gráficas
+
 ### De analítica con Spark
 ![observation_statis_country_global](https://github.com/user-attachments/assets/58cce1d3-b155-4e9f-a884-e8597b7299b2)
 ![observation_summary_stats_ESG](https://github.com/user-attachments/assets/68cefa6b-ed9f-47be-b17d-db4fe228c919)
@@ -302,7 +313,7 @@ Resultados del modelo implementado para cada indicador
 - [Caso base en GitHub y video YouTube](https://github.com/airscholar/EMR-for-data-engineers/tree/main)
 - [Documentación oficial AWS EMR](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html)
 - [Tutorial Spark](https://www.databricks.com/spark/getting-started-with-apache-spark/machine-learning)
-
+- [Inteligencia Artificial para mejorar redacción y buenas prácticas en código](https://chatgpt.com/)
 
 ### Datos de World Bank Open Data
 
