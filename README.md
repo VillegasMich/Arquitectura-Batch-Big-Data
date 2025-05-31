@@ -160,11 +160,24 @@ Toda la configuración del bot se puede realizar desde el archivo `main.py`, `s3
 
 ### Preparación del Cluster y Steps
 
-Una vez que los archivos estén almacenados en la zona `raw` del bucket S3 y se hayan creado todas las carpetas necesarias, el siguiente paso es clonar un cluster EMR pre-configurado que contenga todas las herramientas y programas requeridos. Es importante que el bucket S3 tenga una carpeta llamada `steps` que contenga todos los scripts de Python que se ejecutarán como steps en el cluster.
+#### Inicialización
 
-Una vez que el cluster esté completamente inicializado, dirígete a la sección de `steps` en la interfaz de EMR. Aquí deberás agregar los scripts de Python en orden. Estos scripts están diseñados para realizar las tareas de preparación y análisis de datos.
+En primer lugar, es necesario que todos los archivos originales provenientes de la fuente de datos, se encuentren en la zona `raw` del bucket S3.
 
-#### Script de preparación de datos
+También, es importante que el bucket S3 tenga una carpeta llamada `steps` que contenga todos los scripts de Python que se ejecutarán como steps en el cluster. 
+
+Adicionalmente, dentro del bucket también, se debe crear una carpeta `dependencies` , y adentro, cargar un `script.sh` con todas las librerías y módulos que el EMR necesite, pues estos clusters sólo traen ciertas dependencias instaladas por defecto, pero para la realización de este proyecto se necesitan específicamente las librerías de `numpy` y `pandas` para la correcta ejecución del step de predicciones con sparkML. Un ejemplo de este script puede ser uno que contenga los siguientes comandos:
+
+```
+#!/bin/bash
+sudo pip3 install numpy pandas
+```
+
+El siguiente paso es clonar un cluster EMR pre-configurado que contenga todas las herramientas y programas requeridos. Durante el formulario de creación o clonación, en la sección de **Bootstrap**, es necesario agregar un **Bootstrap Action** que apunte a la URL de S3 donde se encuentre el `script.sh` de instalación de librerías descrito anteriormente. 
+
+Una vez que el cluster esté completamente inicializado, dirígete a la sección de `steps` en la interfaz de EMR. Aquí deberás agregar los scripts de Python en orden. Estos scripts están diseñados para realizar las tareas de preparación y análisis de datos. A continuación, se describen cada uno de ellos:
+
+#### SCRIPT DE PREPARACIÓN DE DATOS
 **Nombre del step:** EDSTATS-step.py
 
 El script de preparación de datos es genérico y puede utilizarse para todos los archivos. Este recibe el nombre de un archivo como parámetro al ejecutarse y realiza las siguientes operaciones sobre el archivo especificado en la zona de parámetros:
@@ -177,7 +190,7 @@ El script de preparación de datos es genérico y puede utilizarse para todos lo
 
 Deberás de crear un step con este script para cada uno de los archivos que vayas a analizar.
 
-#### Script de analisis de datos
+#### SCRIPT DE ANÁLISIS DE DATOS
 **Nombre del step:** indicator-analysis.py
 
 Una vez que los datos se encuentran en la zona `Trusted`, el siguiente paso se encargará de analizarlos mediante PySpark SQL para extraer métricas que facilitarán el estudio de los indicadores. Este proceso incluye:
@@ -189,6 +202,31 @@ Una vez que los datos se encuentran en la zona `Trusted`, el siguiente paso se e
 5. Escribir los resultados globales en la zona `Refined` dentro de la carpeta `stats_country_global`.
 
 Es importante destacar que este script debe ejecutarse en un único paso, ya que realiza el análisis de todos los archivos de manera simultánea.
+
+#### SCRIPT DE PREDICCIÓN DE DATOS
+**Nombre del step:** ML_predictions.py
+
+Este script implementa un proceso automatizado de predicción mediante técnicas de aprendizaje automático utilizando SparkML. Está diseñado para ejecutarse sobre los datos previamente limpiados (ubicados en la zona `Trusted` del bucket S3) y generar predicciones que se almacenan organizadamente en la zona Refined. El script ha sido diseñado para ser reutilizable y adaptable a diferentes conjuntos de datos siempre que cumplan con la estructura de entrada esperada.
+
+Las principales tareas que realiza el script son:
+
+1. Accede a los conjuntos de datos almacenados en la zona `Trusted` de S3, aplicando las transformaciones necesarias para preparar los datos para el entrenamiento del modelo.
+    
+2. Identifica las columnas relevantes para la predicción y construye un vector de características. También realiza transformaciones como la estandarización de valores o la codificación de variables categóricas, si es necesario.
+
+3. Aplica un algoritmo de regresión lineal de SparkML para ajustar un modelo predictivo, dependiendo del tipo de dato de entrada. Este modelo aprende patrones a partir de las variables independientes para predecir la variable objetivo.
+    
+4. Calcula métricas de desempeño como el error cuadrático medio (RMSE) para evaluar la precisión del modelo sobre los datos de prueba. Esto permite valorar la calidad de las predicciones generadas.
+    
+5. Aplica el modelo entrenado a los datos nuevos o no vistos, generando predicciones para la variable objetivo.
+    
+6. Guarda las predicciones junto con las columnas clave del conjunto original en la zona Refined del bucket S3, permitiendo su análisis posterior o visualización en herramientas externas.
+
+Algunas consideraciones importantes son:
+- Este step depende de algunas librerías. Por eso es necesario seguir los pasos de la creación de un Bootstrap Action durante el lanzamiento del cluster.
+- El script está preparado para funcionar como parte de un pipeline de análisis más amplio. Por tanto, se asume que los datos de entrada han sido previamente limpiados y estructurados correctamente.
+- A diferencia de otros scripts que operan archivo por archivo, este script puede configurarse para ejecutarse sobre múltiples conjuntos de datos si se adapta la lógica de carga y filtrado inicial.
+
 
 ### Organización del proyecto
 
@@ -270,7 +308,7 @@ Athena nos permite acceder a nuestros datos almacenados en S3 mediante consultas
 
 - Lenguaje: Python 3.\*, Spark 3.3.0
 - Librerías:
-  - `pyspark`, `boto3`, `matplotlib`, `pandas`
+  - `pyspark`, `boto3`, `matplotlib`, `pandas`, `numpy`
 - Infraestructura:
   - AWS EMR Cluster (Spark)
   - Buckets S3 (zonas Raw, Trusted, Refined)
