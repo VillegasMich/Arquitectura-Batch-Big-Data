@@ -314,8 +314,6 @@ Athena nos permite acceder a nuestros datos almacenados en S3 mediante consultas
   - Buckets S3 (zonas Raw, Trusted, Refined)
   - API Gateway
 
-### Cómo usar la aplicación
-
 ## 5. Otra información relevante
 
 ### Descripción de la fuente de datos utilizada
